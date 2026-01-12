@@ -1086,6 +1086,49 @@ input, select, textarea {
     font-size: 0.9rem;
   }
 }
+.reservation-form {
+  max-width: 480px;
+  margin: auto;
+  padding: 25px;
+  background: #1f3d2b;
+  border-radius: 16px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reservation-form h2 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.reservation-form input,
+.reservation-form select,
+.reservation-form textarea {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-size: 15px;
+}
+
+.reservation-form textarea {
+  min-height: 80px;
+}
+
+.reservation-form button {
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #c9a24d;
+  color: #1f3d2b;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.terms {
+  font-size: 14px;
+}
 
   </style>
   
@@ -1629,7 +1672,12 @@ input, select, textarea {
 
   <textarea name="message" placeholder="Message..."></textarea>
 
-  <button type="button" onclick="sendWhatsApp()">Réserver maintenant</button>
+  <label class="terms">
+    <input type="checkbox" id="agree">
+    أوافق على شروط الحجز وأعلم أن التأكيد يتم عبر الهاتف
+  </label>
+
+  <button onclick="sendWhatsApp()">📲 Confirmer la réservation</button>
 
 </form>
 
@@ -1724,51 +1772,68 @@ window.addEventListener("scroll", () => {
 });
 </script>
 <script>
-/* ===== DATE VALIDATION ===== */
+// ===== DATE المستقبل =====
 const dateInput = document.getElementById("date");
-const today = new Date().toISOString().split("T")[0];
-dateInput.min = today;
+const today = new Date();
+today.setDate(today.getDate() + 1);
+dateInput.min = today.toISOString().split("T")[0];
 
-/* ===== SHOW / HIDE OPTIONS ===== */
+// ===== HEURE =====
+const heureInput = document.getElementById("heure");
+heureInput.addEventListener("change", () => {
+  const h = heureInput.value;
+  if (h < "18:00" || h > "23:59") {
+    alert("⛔ الحجز متاح من 18:00 حتى 00:00");
+    heureInput.value = "";
+  }
+});
+
+// ===== OPTIONS ANNIV =====
 const typeReservation = document.getElementById("typeReservation");
 const optionsBox = document.getElementById("optionsBox");
 
 typeReservation.addEventListener("change", () => {
   optionsBox.style.display =
-    typeReservation.value === "anniversaire" ? "block" : "none";
+    typeReservation.value === "Anniversaire" ? "block" : "none";
 });
 
-/* ===== WHATSAPP SEND ===== */
+// ===== WHATSAPP =====
 function sendWhatsApp() {
+
   const nom = document.querySelector('[name="nom"]').value.trim();
   const tel = document.querySelector('[name="telephone"]').value.trim();
   const email = document.querySelector('[name="email"]').value.trim();
-  const date = document.querySelector('[name="date"]').value;
-  const heure = document.querySelector('[name="heure"]').value;
+  const date = dateInput.value;
+  const heure = heureInput.value;
   const personnes = document.querySelector('[name="personnes"]').value;
   const type = typeReservation.value;
-  const message = document.querySelector('[name="message"]').value.trim();
+  const message = document.querySelector('textarea').value.trim();
+  const agree = document.getElementById("agree").checked;
 
   if (!nom || !tel || !date || !heure || !personnes || !type) {
-    alert("❗ عافاك عمر جميع الخانات الضرورية");
+    alert("❗ عمر جميع الخانات الضرورية");
     return;
   }
 
-  if (date < today) {
-    alert("❌ لا يمكن اختيار تاريخ في الماضي");
+  if (!agree) {
+    alert("❗ خاصك توافق على شروط الحجز");
     return;
   }
 
-  const optionsSelect = document.querySelector('[name="options[]"]');
-  const options = optionsSelect
-    ? Array.from(optionsSelect.selectedOptions).map(o => o.value).join(", ")
+  const reservationId = Math.floor(100000 + Math.random() * 900000);
+
+  const options = document.getElementById("options")
+    ? Array.from(document.getElementById("options").selectedOptions)
+        .map(o => o.value).join(", ")
     : "";
 
-  const text =
-`🍽️ *Nouvelle Réservation – La Ruche de Jardin*
+  const text = `
+🍽️ *Nouvelle Réservation*
+🏷️ La Ruche de Jardin
 
+🆔 Réservation: ${reservationId}
 👤 Nom: ${nom}
-📞 Téléphone: ${tel}
+📞 Tel: ${tel}
 📧 Email: ${email || "-"}
 
 📅 Date: ${date}
@@ -1779,29 +1844,20 @@ function sendWhatsApp() {
 🎁 Options: ${options || "Aucune"}
 
 📝 Message:
-${message || "—"}
+${message || "-"}
 
-✅ Merci pour votre réservation`;
+⚠️ الحجز يتم تأكيده بعد الاتصال
+`;
 
-  const phone = "212705738779"; // رقم الريستوران
+  const phone = "212705738779"; // بدّل الرقم
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
 }
 </script>
-<script>
-const heureInput = document.getElementById("heure");
 
-heureInput.addEventListener("change", () => {
-  const heure = heureInput.value;
-
-  if (heure < "18:00" || heure > "23:59") {
-    alert("⛔ الحجز متاح فقط من 18:00 حتى 00:00");
-    heureInput.value = "";
-  }
-});
-</script>
 
 </body>
 </html>
+
 
 
 
