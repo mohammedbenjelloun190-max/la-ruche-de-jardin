@@ -1819,14 +1819,6 @@ function sendWhatsApp() {
     alert("❗ خاصك توافق على شروط الحجز");
     return;
   }
-if (!isValidMoroccanPhone(tel)) {
-  alert("❌ رقم الهاتف غير صحيح (مثال: 0612345678)");
-  return;
-}
-if (email && !email.includes("@")) {
-  alert("❌ البريد الإلكتروني غير صالح");
-  return;
-}
 
   const reservationId = Math.floor(100000 + Math.random() * 900000);
 
@@ -1875,6 +1867,7 @@ function isValidMoroccanPhone(phone) {
 
 </body>
 </html>
+
 
 
 
