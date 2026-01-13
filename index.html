@@ -1819,6 +1819,14 @@ function sendWhatsApp() {
     alert("❗ خاصك توافق على شروط الحجز");
     return;
   }
+if (!isValidMoroccanPhone(tel)) {
+  alert("❌ رقم الهاتف غير صحيح (مثال: 0612345678)");
+  return;
+}
+if (email && !email.includes("@")) {
+  alert("❌ البريد الإلكتروني غير صالح");
+  return;
+}
 
   const reservationId = Math.floor(100000 + Math.random() * 900000);
 
@@ -1852,11 +1860,22 @@ ${message || "-"}
   const phone = "212705738779"; // بدّل الرقم
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, "_blank");
 }
+   const reservationCode = "LRJ-" + Math.floor(1000 + Math.random() * 9000);
+🆔 Code réservation: LRJ-4821
+⚠️ الحجز غير مؤكد حتى يتم الاتصال بكم
+
+</script>
+<script>
+function isValidMoroccanPhone(phone) {
+  const regex = /^(06|07)\d{8}$/;
+  return regex.test(phone);
+}
 </script>
 
 
 </body>
 </html>
+
 
 
 
