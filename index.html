@@ -1129,6 +1129,78 @@ input, select, textarea {
 .terms {
   font-size: 14px;
 }
+.avis-section {
+  background: #f4f7f5;
+  padding: 90px 10%;
+}
+
+.avis-form {
+  max-width: 520px;
+  margin: 30px auto;
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+}
+
+.avis-form input,
+.avis-form textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+}
+
+.avis-form textarea {
+  resize: none;
+  height: 100px;
+}
+
+.stars {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #ccc;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.stars span.active {
+  color: #C9A24D;
+}
+
+.avis-form button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(135deg,#C9A24D,#A8842C);
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.avis-list {
+  max-width: 700px;
+  margin: 50px auto 0;
+}
+
+.avis-item {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.avis-item .name {
+  font-weight: bold;
+  color: #1F3D2B;
+}
+
+.avis-item .rating {
+  color: #C9A24D;
+}
 
   </style>
 <script type="application/ld+json">
@@ -1605,6 +1677,29 @@ input, select, textarea {
     </div>
   </div>
 </section>
+   <section id="avis" class="avis-section">
+  <h2>Avis clients</h2>
+
+  <form id="avisForm" class="avis-form">
+    <input type="text" id="avisName" placeholder="Votre nom" required>
+
+    <textarea id="avisMessage" placeholder="Votre avis" required></textarea>
+
+    <div class="stars" id="stars">
+      <span data-star="1">★</span>
+      <span data-star="2">★</span>
+      <span data-star="3">★</span>
+      <span data-star="4">★</span>
+      <span data-star="5">★</span>
+    </div>
+
+    <button type="submit">Envoyer l’avis</button>
+  </form>
+
+  <!-- عرض الآراء -->
+  <div id="avisList" class="avis-list"></div>
+</section>
+
 <section id="reservation" class="reservation-pro">
   <div class="reservation-box">
 
@@ -1874,6 +1969,46 @@ function isValidMoroccanPhone(phone) {
   const regex = /^(06|07)\d{8}$/;
   return regex.test(phone);
 }
+</script>
+<script>
+let rating = 0;
+
+document.querySelectorAll("#stars span").forEach(star => {
+  star.addEventListener("click", () => {
+    rating = star.dataset.star;
+    document.querySelectorAll("#stars span").forEach(s => {
+      s.classList.remove("active");
+    });
+    for (let i = 0; i < rating; i++) {
+      document.querySelectorAll("#stars span")[i].classList.add("active");
+    }
+  });
+});
+
+document.getElementById("avisForm").addEventListener("submit", function(e){
+  e.preventDefault();
+
+  if (rating == 0) {
+    alert("⭐ Merci de donner une note");
+    return;
+  }
+
+  const name = document.getElementById("avisName").value;
+  const message = document.getElementById("avisMessage").value;
+
+  const avis = document.createElement("div");
+  avis.className = "avis-item";
+  avis.innerHTML = `
+    <div class="name">${name}</div>
+    <div class="rating">${"★".repeat(rating)}</div>
+    <p>${message}</p>
+  `;
+
+  document.getElementById("avisList").prepend(avis);
+  this.reset();
+  rating = 0;
+  document.querySelectorAll("#stars span").forEach(s => s.classList.remove("active"));
+});
 </script>
 
 </body>
